@@ -16,7 +16,7 @@ app.use('/api/inventory', inventoryRoutes);
 
 // Ruta de prueba inicial
 app.get('/', (req, res) => {
-    res.send('Servidor de Automatización de Inventario Corriendo 🚀');
+    res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
 app.listen(PORT, () => {
