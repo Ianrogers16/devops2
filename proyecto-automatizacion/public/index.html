@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Automatización de Inventario - TecMilenio</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 40px; }
+        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
+        h2 { color: #333; text-align: center; }
+        input { display: block; width: 100%; margin: 15px 0; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        button:hover { background: #0056b3; }
+        #resultado { margin-top: 25px; padding: 15px; border-top: 2px solid #eee; }
+        .alerta { color: #d9534f; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Panel de Inventario</h2>
+        <input type="text" id="prod" placeholder="Nombre del producto (ej. Cable UTP)">
+        <input type="number" id="cant" placeholder="Cantidad en stock">
+        <input type="number" id="prec" placeholder="Precio Unitario ($MXN)">
+        <button onclick="procesar()">Calcular Automatización</button>
+        
+        <div id="resultado"></div>
+    </div>
+
+    <script>
+        async function procesar() {
+            const data = {
+                producto: document.getElementById('prod').value,
+                cantidad: parseInt(document.getElementById('cant').value),
+                precio: parseFloat(document.getElementById('prec').value)
+            };
+
+            const response = await fetch('/api/inventory/vender', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            });
+            
+            const res = await response.json();
+            const info = res.data;
+
+            document.getElementById('resultado').innerHTML = `
+                <p><strong>Producto:</strong> ${info.producto}</p>
+                <p><strong>Subtotal:</strong> $${info.subtotal}</p>
+                <p><strong>IVA (16%):</strong> $${info.impuesto}</p>
+                <p style="font-size: 1.2em;"><strong>TOTAL: $${info.total}</strong></p>
+                <p><strong>Estado:</strong> <span class="alerta">${info.status}</span></p>
+                <small>Procesado: ${info.fechaProcesado}</small>
+            `;
+        }
+    </script>
+</body>
+</html>
