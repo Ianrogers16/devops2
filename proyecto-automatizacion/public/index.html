@@ -5,52 +5,214 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatización de Inventario - TecMilenio</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #eef2f3; padding: 40px; }
-        .container { background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 450px; margin: auto; }
-        h2 { color: #333; text-align: center; }
-        input { display: block; width: 100%; margin: 15px 0; padding: 12px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
-        button { background: #007bff; color: white; border: none; padding: 12px; width: 100%; border-radius: 6px; cursor: pointer; font-size: 16px; }
-        button:hover { background: #0056b3; }
-        #resultado { margin-top: 25px; padding: 15px; border-top: 2px solid #eee; }
-        .alerta { color: #d9534f; font-weight: bold; }
+        :root {
+            --bg: #eef5fd;
+            --card: rgba(255, 255, 255, 0.98);
+            --primary: #3468ff;
+            --primary-dark: #214bb8;
+            --text: #0f172a;
+            --muted: #64748b;
+            --error: #d9534f;
+            --border: rgba(52, 104, 255, 0.18);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: radial-gradient(circle at top left, rgba(52, 104, 255, 0.18), transparent 28%),
+                        radial-gradient(circle at bottom right, rgba(16, 185, 129, 0.16), transparent 30%),
+                        var(--bg);
+            display: grid;
+            place-items: center;
+            padding: 24px;
+            color: var(--text);
+        }
+
+        .container {
+            width: min(560px, 100%);
+            background: var(--card);
+            border: 1px solid rgba(15, 23, 42, 0.08);
+            border-radius: 30px;
+            padding: 34px 36px;
+            box-shadow: 0 30px 90px rgba(15, 23, 42, 0.12);
+            backdrop-filter: blur(10px);
+        }
+
+        .header {
+            margin-bottom: 26px;
+        }
+
+        .header h2 {
+            margin: 0;
+            font-size: 2rem;
+            letter-spacing: -0.04em;
+        }
+
+        .header p {
+            margin: 10px 0 0;
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .field {
+            margin-bottom: 18px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        input {
+            width: 100%;
+            border: 1px solid rgba(15, 23, 42, 0.12);
+            border-radius: 16px;
+            padding: 14px 16px;
+            font-size: 1rem;
+            background: #fff;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: rgba(52, 104, 255, 0.6);
+            box-shadow: 0 0 0 4px rgba(52, 104, 255, 0.12);
+        }
+
+        button {
+            width: 100%;
+            border: none;
+            border-radius: 18px;
+            padding: 16px 18px;
+            font-size: 1rem;
+            font-weight: 700;
+            color: #fff;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 18px 30px rgba(52, 104, 255, 0.18);
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 22px 36px rgba(52, 104, 255, 0.22);
+        }
+
+        #resultado {
+            margin-top: 28px;
+            background: #f8fbff;
+            border: 1px solid rgba(52, 104, 255, 0.12);
+            border-radius: 22px;
+            padding: 24px;
+            min-height: 140px;
+        }
+
+        #resultado p {
+            margin: 0 0 12px;
+            line-height: 1.7;
+        }
+
+        #resultado small {
+            display: block;
+            margin-top: 12px;
+            color: var(--muted);
+        }
+
+        .alerta {
+            color: var(--error);
+            font-weight: 700;
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>Panel de Inventario</h2>
-        <input type="text" id="prod" placeholder="Nombre del producto (ej. Cable UTP)">
-        <input type="number" id="cant" placeholder="Cantidad en stock">
-        <input type="number" id="prec" placeholder="Precio Unitario ($MXN)">
+        <div class="header">
+            <h2>Panel de Inventario</h2>
+            <p>Introduce los datos del producto y calcula el total con IVA de forma rápida.</p>
+        </div>
+
+        <div class="field">
+            <label for="prod">Producto</label>
+            <input type="text" id="prod" placeholder="Cable UTP, memoria USB, etc.">
+        </div>
+
+        <div class="field">
+            <label for="cant">Cantidad en stock</label>
+            <input type="number" id="cant" placeholder="Ej. 12">
+        </div>
+
+        <div class="field">
+            <label for="prec">Precio unitario ($MXN)</label>
+            <input type="number" id="prec" placeholder="Ej. 5.16" step="0.01">
+        </div>
+
         <button onclick="procesar()">Calcular Automatización</button>
-        
+
         <div id="resultado"></div>
     </div>
 
     <script>
         async function procesar() {
-            const data = {
-                producto: document.getElementById('prod').value,
-                cantidad: parseInt(document.getElementById('cant').value),
-                precio: parseFloat(document.getElementById('prec').value)
-            };
+            const producto = document.getElementById('prod').value.trim();
+            const cantidad = parseInt(document.getElementById('cant').value, 10);
+            const precio = parseFloat(document.getElementById('prec').value);
+            const resultado = document.getElementById('resultado');
 
-            const response = await fetch('/api/inventory/vender', {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify(data)
-            });
-            
-            const res = await response.json();
-            const info = res.data;
+            if (!producto || Number.isNaN(cantidad) || Number.isNaN(precio)) {
+                resultado.innerHTML = '<p class="alerta">Por favor completa todos los campos con valores válidos.</p>';
+                return;
+            }
 
-            document.getElementById('resultado').innerHTML = `
-                <p><strong>Producto:</strong> ${info.producto}</p>
-                <p><strong>Subtotal:</strong> $${info.subtotal}</p>
-                <p><strong>IVA (16%):</strong> $${info.impuesto}</p>
-                <p style="font-size: 1.2em;"><strong>TOTAL: $${info.total}</strong></p>
-                <p><strong>Estado:</strong> <span class="alerta">${info.status}</span></p>
-                <small>Procesado: ${info.fechaProcesado}</small>
-            `;
+            try {
+                const baseUrl = (location.protocol === 'http:' || location.protocol === 'https:')
+                    ? `${location.protocol}//${location.hostname}:3000`
+                    : 'http://localhost:3000';
+
+                const response = await fetch(`${baseUrl}/api/inventory/vender`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ producto, cantidad, precio })
+                });
+
+                const text = await response.text();
+                let res;
+
+                try {
+                    res = text ? JSON.parse(text) : null;
+                } catch (parseError) {
+                    resultado.innerHTML = `<p class="alerta">Error: respuesta inválida del servidor (${response.status}).</p>`;
+                    return;
+                }
+
+                if (!response.ok) {
+                    resultado.innerHTML = `<p class="alerta">Error: ${res?.error || response.statusText || 'No se pudo procesar la solicitud.'}</p>`;
+                    return;
+                }
+
+                const info = res?.data;
+                if (!info) {
+                    resultado.innerHTML = '<p class="alerta">Error: la respuesta del servidor no contiene datos válidos.</p>';
+                    return;
+                }
+
+                resultado.innerHTML = `
+                    <p><strong>Producto:</strong> ${info.producto}</p>
+                    <p><strong>Subtotal:</strong> $${info.subtotal}</p>
+                    <p><strong>IVA (16%):</strong> $${info.impuesto}</p>
+                    <p style="font-size: 1.2em;"><strong>TOTAL: $${info.total}</strong></p>
+                    <p><strong>Estado:</strong> <span class="alerta">${info.status}</span></p>
+                    <small>Procesado: ${info.fechaProcesado}</small>
+                `;
+            } catch (error) {
+                resultado.innerHTML = `<p class="alerta">Error de conexión: ${error.message}</p>`;
+            }
         }
     </script>
 </body>
