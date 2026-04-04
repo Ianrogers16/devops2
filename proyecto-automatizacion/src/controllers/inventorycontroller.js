@@ -1,12 +1,18 @@
-// Simulación de una función que automatiza el cálculo de impuestos y stock
+/**
+ * LÓGICA DE AUTOMATIZACIÓN: 
+ * Este controlador procesa los datos de entrada sin intervención humana
+ * para generar cálculos fiscales y estados de inventario.
+ */
 const procesarVenta = (producto, cantidad, precioUnitario) => {
-    const IVA = 0.16;
+    // 1. Automatización de cálculo de IVA (16% fijo)
+    const IVA_FACTOR = 0.16;
     const subtotal = precioUnitario * cantidad;
-    const impuesto = subtotal * IVA;
+    const impuesto = subtotal * IVA_FACTOR; 
     const total = subtotal + impuesto;
 
-    // Lógica automática: Si el stock es bajo, marcar una alerta
-    let alertaStock = (cantidad <= 5) ? "REABASTECER URGENTE" : "Stock Suficiente";
+    // 2. Lógica automática de toma de decisiones (Stock Alert)
+    // Se ejecuta automáticamente según la lógica de negocio definida
+    let alertaStock = (cantidad <= 5) ? "⚠️ REABASTECER URGENTE" : "✅ Stock Suficiente";
 
     return {
         producto,
@@ -15,7 +21,7 @@ const procesarVenta = (producto, cantidad, precioUnitario) => {
         impuesto: impuesto.toFixed(2),
         total: total.toFixed(2),
         status: alertaStock,
-        fechaProcesado: new Date().toLocaleString()
+        fechaProcesado: new Date().toLocaleString() // Timestamp automático
     };
 };
 
