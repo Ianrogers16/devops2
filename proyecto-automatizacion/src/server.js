@@ -21,11 +21,15 @@ app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
+<<<<<<< HEAD
 // Respuesta JSON para rutas API no encontradas
 app.use('/api', (req, res) => {
     res.status(404).json({ error: 'Ruta de API no encontrada.' });
 });
 
+=======
+const PORT = process.env.PORT || 3000;
+>>>>>>> a32a76e (final: server ready for deployment)
 app.listen(PORT, () => {
-    console.log(`Servidor activo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
