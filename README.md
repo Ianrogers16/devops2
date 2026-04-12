@@ -1,26 +1,24 @@
-# 🚀 Sistema de Automatización de Inventario (DevOps 2)
+#  Epicentro - Gestión de Automatización
 
-Este proyecto es una aplicación web full-stack desarrollada en **Node.js** diseñada para automatizar la gestión de stock y cálculos financieros de un inventario en tiempo real. 
-
-El sistema permite procesar entradas de productos, calcular automáticamente el **IVA (16%)**, el **Total** y generar alertas inteligentes de reabastecimiento basadas en la lógica de negocio.
+Sistema web de control de inventario y cálculo automatizado desarrollado para la gestión eficiente de productos. Este proyecto integra un **Frontend** moderno con un **Backend** en Node.js para procesar operaciones de inventario en tiempo real.
 
 ## 🛠️ Tecnologías Utilizadas
 
-* **Backend:** Node.js, Express.js
-* **Middleware:** CORS, Dotenv
-* **Frontend:** HTML5, CSS3 (Tailwind CSS), JavaScript (Fetch API)
-* **Control de Versiones:** Git & GitHub
+* **Frontend:** HTML5, CSS3 (Diseño responsivo y tech), JavaScript (Fetch API).
+* **Backend:** Node.js, Express.js.
+* **Despliegue:** Render / GitHub.
+* **Entorno:** Arquitectura cliente-servidor.
 
-## 📂 Estructura del Proyecto
+## 📦 Estructura del Proyecto
 
 ```text
-/proyecto-automatizacion
-  ├── /public           # Interfaz de usuario (Frontend)
-  │   └── index.html    # Panel de control visual
-  ├── /src              # Código fuente (Backend)
-  │   ├── /controllers  # Lógica de automatización y cálculos
-  │   ├── /routers      # Definición de rutas de la API
-  │   └── server.js     # Punto de entrada del servidor
-  ├── .env              # Variables de entorno
-  ├── .gitignore        # Archivos excluidos de Git
-  └── package.json      # Dependencias del proyecto
+.
+├── public/                 # Archivos estáticos
+│   ├── css/index.css       # Estilos metálicos y responsivos
+│   ├── script/script.js    # Lógica de comunicación con el servidor
+│   └── index.html          # Interfaz de usuario
+├── src/
+│   └── routers/            # Rutas de la API (inventario)
+├── server.js               # Servidor principal de Express
+├── package.json            # Configuración y dependencias
+└── README.md               # Documentación
