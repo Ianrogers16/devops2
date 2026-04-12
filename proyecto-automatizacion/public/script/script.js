@@ -1,80 +1,46 @@
+document.getElementById('btn-procesar').addEventListener('click', async () => {
+    // 1. Captura de valores desde el HTML
+    const producto = document.getElementById('prod').value;
+    const cantidad = document.getElementById('cant').value;
+    const precio = document.getElementById('prec').value;
+    const resDiv = document.getElementById('resultado');
 
-// Cuando el DOM está listo
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('btn-procesar').addEventListener('click', procesar);
-    setupMenuToggle();
+    // Validación simple
+    if (!producto || !cantidad || !precio) {
+        alert("Por favor, llena todos los campos");
+        return;
+    }
+
+    try {
+        // 2. Envío de datos al servidor Node.js
+        const response = await fetch('/api/inventory/vender', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                producto: producto, 
+                cantidad: parseInt(cantidad), 
+                precio: parseFloat(precio) 
+            })
+        });
+
+        const resJSON = await response.json();
+        
+        // Verificamos que el servidor respondió correctamente
+        if (resJSON.data) {
+            const info = resJSON.data;
+
+            // 3. Insertamos el resultado en el div con el diseño de la tarjeta
+            resDiv.innerHTML = `
+                <div class="res-card">
+                    <h3 style="color: #3468ff; margin: 0;">Total: $${info.total}</h3>
+                    <p style="margin: 10px 0; color: #1e293b;">${info.status}</p>
+                    <small style="color: #64748b;">${info.fecha}</small>
+                </div>
+            `;
+        }
+
+    } catch (e) {
+        console.error("Error en la conexión:", e);
+        resDiv.innerHTML = "<p style='color:red;'>Error al conectar con el servidor</p>";
+    }
 });
-
-async function procesar() {
-    const producto = document.getElementById('prod').value.trim();
-            const cantidad = parseInt(document.getElementById('cant').value, 10);
-            const precio = parseFloat(document.getElementById('prec').value);
-            const resultado = document.getElementById('resultado');
-
-            if (!producto || Number.isNaN(cantidad) || Number.isNaN(precio)) {
-                resultado.innerHTML = '<p class="alerta">Por favor completa todos los campos con valores válidos.</p>';
-                return;
-            }
-
-            try {
-                const baseUrl = (location.protocol === 'http:' || location.protocol === 'https:')
-                    ? `${location.protocol}//${location.hostname}:3000`
-                    : 'http://localhost:3000';
-
-                const response = await fetch(`${baseUrl}/api/inventory/vender`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ producto, cantidad, precio })
-                });
-
-                const text = await response.text();
-                let res;
-
-                try {
-                    res = text ? JSON.parse(text) : null;
-                } catch (parseError) {
-                    resultado.innerHTML = `<p class="alerta">Error: respuesta inválida del servidor (${response.status}).</p>`;
-                    return;
-                }
-
-                if (!response.ok) {
-                    resultado.innerHTML = `<p class="alerta">Error: ${res?.error || response.statusText || 'No se pudo procesar la solicitud.'}</p>`;
-                    return;
-                }
-
-                const info = res?.data;
-                if (!info) {
-                    resultado.innerHTML = '<p class="alerta">Error: la respuesta del servidor no contiene datos válidos.</p>';
-                    return;
-                }
-
-                resultado.innerHTML = `
-                    <p><strong>Producto:</strong> ${info.producto}</p>
-                    <p><strong>Subtotal:</strong> $${info.subtotal}</p>
-                    <p><strong>IVA (16%):</strong> $${info.impuesto}</p>
-                    <p style="font-size: 1.2em;"><strong>TOTAL: $${info.total}</strong></p>
-                    <p><strong>Estado:</strong> <span class="alerta">${info.status}</span></p>
-                    <small>Procesado: ${info.fechaProcesado}</small>
-                `;
-        } catch (error) {
-            resultado.innerHTML = `<p class="alerta">Error de conexión: ${error.message}</p>`;
-        }
-}
-
-function setupMenuToggle() {
-    const menuBtn = document.getElementById('menu-btn');
-    const navMenu = document.getElementById('nav-menu');
-
-    menuBtn.addEventListener('click', () => {
-        menuBtn.classList.toggle('active');
-        navMenu.classList.toggle('active');
-    });
-
-    // Cerrar el menú si se hace clic fuera de él
-    document.addEventListener('click', (e) => {
-        if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
-            menuBtn.classList.remove('active');
-            navMenu.classList.remove('active');
-        }
-    });
-}
