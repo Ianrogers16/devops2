@@ -5,27 +5,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Automatización de Inventario - TecMilenio</title>
     <link rel="stylesheet" href="css/index.css">
-    <script src="script/script.js"></script>
 </head>
 <body>
     <header class="main-header">
-    <div class="header-left">
-        <span class="logo-text">Epicentro</span>
-    </div>
-    <div class="header-right">
-        <button class="menu-toggle" id="menu-btn">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-        <nav class="nav-menu" id="nav-menu">
-            <a href="#">Inicio</a>
-            <a href="#">Inventario</a>
-            <a href="#">Reportes</a>
-            <a href="#">Ajustes</a>
-        </nav>
-    </div>
-</header>
+        <div class="header-left">
+            <span class="logo-text">Epicentro</span>
+        </div>
+        <div class="header-right">
+            <button class="menu-toggle" id="menu-btn">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <nav class="nav-menu" id="nav-menu">
+                <a href="#">Inicio</a>
+                <a href="#">Inventario</a>
+                <a href="#">Reportes</a>
+                <a href="#">Ajustes</a>
+            </nav>
+        </div>
+    </header>
+
     <div class="container">
         <div class="header">
             <h2>Panel de Inventario</h2>
@@ -47,13 +47,15 @@
             <input type="number" id="prec" placeholder="Ej. 5.16" step="0.01">
         </div>
 
-        <button onclick="procesar()">Calcular Automatización</button>
+        <button id="btn-procesar">Calcular Automatización</button>
 
         <div id="resultado"></div>
     </div>
+
     <footer class="main-footer">
-    <p>&copy; 2024 TecMilenio. Todos los derechos reservados.</p>
-</footer>  
+        <p>&copy; 2024 TecMilenio. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="script/script.js"></script>
 </body>
-  
 </html>

@@ -1,6 +1,12 @@
 
+// Cuando el DOM está listo
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('btn-procesar').addEventListener('click', procesar);
+    setupMenuToggle();
+});
+
 async function procesar() {
-            const producto = document.getElementById('prod').value.trim();
+    const producto = document.getElementById('prod').value.trim();
             const cantidad = parseInt(document.getElementById('cant').value, 10);
             const precio = parseFloat(document.getElementById('prec').value);
             const resultado = document.getElementById('resultado');
@@ -50,23 +56,25 @@ async function procesar() {
                     <p><strong>Estado:</strong> <span class="alerta">${info.status}</span></p>
                     <small>Procesado: ${info.fechaProcesado}</small>
                 `;
-            } catch (error) {
-                resultado.innerHTML = `<p class="alerta">Error de conexión: ${error.message}</p>`;
-            }
+        } catch (error) {
+            resultado.innerHTML = `<p class="alerta">Error de conexión: ${error.message}</p>`;
         }
-const menuBtn = document.getElementById('menu-btn');
-const navMenu = document.getElementById('nav-menu');
+}
 
-menuBtn.addEventListener('click', () => {
-    // Alterna la clase active para el menú y el botón
-    menuBtn.classList.toggle('active');
-    navMenu.classList.toggle('active');
-});
+function setupMenuToggle() {
+    const menuBtn = document.getElementById('menu-btn');
+    const navMenu = document.getElementById('nav-menu');
 
-// Cerrar el menú si se hace clic fuera de él
-document.addEventListener('click', (e) => {
-    if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
-        menuBtn.classList.remove('active');
-        navMenu.classList.remove('active');
-    }
-});
+    menuBtn.addEventListener('click', () => {
+        menuBtn.classList.toggle('active');
+        navMenu.classList.toggle('active');
+    });
+
+    // Cerrar el menú si se hace clic fuera de él
+    document.addEventListener('click', (e) => {
+        if (!menuBtn.contains(e.target) && !navMenu.contains(e.target)) {
+            menuBtn.classList.remove('active');
+            navMenu.classList.remove('active');
+        }
+    });
+}
